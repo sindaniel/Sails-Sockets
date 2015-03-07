@@ -10,26 +10,50 @@ module.exports = {
 
 	
 		
-        var nameSent = req.param('name');
+        var send = req.param('send');
+        var message = req.param('message');
 
-        if (nameSent && req.isSocket){
+        
+
+
+
+        if (send && req.isSocket){
 
           // User.update(1,{name:'Heisenberg'}).exec(function update(err,updated){
           // 	console.log(updated)
           //   User.publishUpdate(2,{ name:'daniel' });
           // });
 
+        if(send == 1){
+          console.log('entro auqi y manda '+message)
+          sails.sockets.emit(message, 'privateMessage', {from: req.session.userId, msg: 'Hi!'});
+          //User.publishUpdate(message,"hola");
+        }
 
+
+        User.findOne(1).exec(function(e,userOne){
+        // Get all of the sockets that are subscribed to user #1
+
+        var subscribers = User.subscribers(userOne);
+     
+        
+       _.each(subscribers, function(subscriber) {
+          console.log(subscriber.id)
+        });
+        // Subscribe them all to userOne's best friend, too
       
+    });
 
 
-          User.create({name:nameSent})
-				.exec(function(error,data_from_client){
-					console.log(data_from_client);
+       // User.publishUpdate(1,"hola");
 
-          console.log(User.subscribers(userOne));
-					User.publishUpdate(2,data_from_client);
-				}); 
+    //       User.create({name:nameSent})
+				//     .exec(function(error,data_from_client){
+				// 	console.log(data_from_client);
+
+          
+
+				// }); 
 
 
 
