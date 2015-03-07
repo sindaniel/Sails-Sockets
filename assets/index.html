@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html >
+<head>
+	<title>Sails Socket Demo - Maangalabs</title>
+	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+	<style type="text/css">
+	body{
+		background: #ededed;
+		font-family: 'Open Sans', sans-serif;
+
+	}
+	.navbar{
+		border-radius: 0px;
+	}
+	.form_chat{
+		padding:10px;
+	}
+	.form-control{
+		width: inherit;
+	}
+	.chat_message{
+		padding: 10px;
+		color: #000;
+		font-size: 15px;
+	background: #fff;
+		font-family: 'Open Sans', sans-serif;
+	}
+	.td_class{
+		word-break:break-all;
+		padding: 34px;
+		padding-bottom: 0px;
+		padding-top: 20px;
+		border:0;
+	}
+	.navbar-brand{
+		font-size: 14px;
+		font-weight: 600;
+		text-decoration: none;
+	}
+	.user_name{
+		padding-bottom: 0;
+		color: #fff;
+		font-size: 15px;
+	}
+	.col-lg-4,.col-lg-6{
+		padding-right: 3px;
+		padding-left: 3px;
+	}
+
+	</style>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>
+</head>
+<body ng-app="socketApp" ng-controller="UserController">
+
+	<div class="navbar navbar-default navbar-fixed-top">
+		<div class="navbar-header">
+	    	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+	    		<span class="icon-bar"></span>
+	    		<span class="icon-bar"></span>
+	    		<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">Socket Sails Demo - Maangalabs</a>
+		</div>
+		 <div class="navbar-collapse collapse navbar-responsive-collapse">
+		     <ul class="nav navbar-nav navbar-right">
+		      <li><a href="//maangalabs.com/blog/2014/12/04/socket-in-sails/"><strong>Go to the tutorial Page >> &nbsp;&nbsp;&nbsp;</strong></a></li>
+		      
+		    </ul>
+		  </div>
+	</div>
+
+
+	<div class="col-md-12" style="padding:100px">
+		
+		<table  class="table">
+			<tr class="chat_message" ng-repeat="chat in chatList | orderBy:predicate:reverse | limitTo: 15">
+				<td class="col-md-12 td_class"><strong>{{ chat.id }} : </strong> {{ chat.name }}</td>
+			</tr>
+		</table>
+		
+	</div>
+
+
+	
+
+	<div class="navbar navbar-inverse navbar-fixed-bottom" >
+	  <div class="col-lg-12">
+	    
+	    <form class="form_chat">
+	    	<div class="col-lg-4 col-md-3">
+	      		<input type="text" ng-model = "chatUser" class="form-control" placeholder="TypeYourNameHere">
+          	</div>
+          	
+	    	<div class="col-lg-6 col-md-5">
+	      		<input type="text" ng-model = "chatMessage" class="form-control" placeholder="TypeYourMessageHere">
+          	</div>
+          	<button class="btn btn-default col-lg-2 col-md-2" ng-click="sendMsg()">Send</button>  
+	    </form>
+	    
+	  </div>
+	</div>
+
+	<script type="text/javascript" src="/js/dependencies/sails.io.js"></script>
+
+	<script type="text/javascript">
+window.onload = function subscribeAndListen(){
+    // When the document loads, send a request to users.testSocket
+    // The controller code will subscribe you to all of the 'users' model instances (records)
+    io.socket.get('/user/test/');
+
+    // Listen for the event called 'user'
+    io.socket.on('user',function(obj){
+    	console.log(obj)
+      if (obj.verb == 'updated') {
+        var previous = obj.previous;
+        var data = obj.data;
+        console.log('User  has been updated to '+data.name);
+
+      }
+    });
+};
+
+function doEdit(){
+
+    // Send the name to the testSocket action on the 'Users' contoller
+console.log("manda")
+    io.socket.get('/user/test',{name:'Walter'});
+}
+
+</script>
+<div class="addButton" onClick="doEdit()">Click Me to add a new User! </div>
+ <form name="notificationForm">
+        <input type="text" data-ng-model="notification.title" data-ng-required="true" data-ng-disabled="!permissionsGranted" placeholder="Notification Title" />
+        <input type="text" data-ng-model="notification.body" data-ng-disabled="!permissionsGranted" placeholder="Notification body" />
+        <input type="text" data-ng-model="notification.icon" data-ng-disabled="true" placeholder="Icon" />
+        <button class="btn btn-primary" data-ng-disabled="!notification.title || !permissionsGranted" data-ng-click="showNotification()">Display Notification</button>
+    </form>
+
+
+	<script type="text/javascript">
+	</script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.min.js"></script>
+	<script src="http://ttsvetko.github.io/HTML5-Desktop-Notifications/js/desktop-notify.js"></script>
+	<script src="http://ttsvetko.github.io/HTML5-Desktop-Notifications/js/main.js"></script>
+	<script type="text/javascript">
+
+		var socketApp = angular.module('socketApp',[]);
+
+		socketApp.controller('UserController',['$http','$log','$scope',function($http,$log,$scope){
+
+
+			$scope.predicate = '-id';
+			$scope.reverse = false;
+			$scope.baseUrl = 'http://192.168.0.100:1337';
+			$scope.chatList =[];
+			$scope.getAllchat = function(){
+
+				//io.socket.get('/test');
+				io.socket.get('/user/test/');
+
+
+				$http.get($scope.baseUrl+'/user')
+					 .success(function(success_data){
+					 		$scope.chatList = success_data;
+					 		$log.info(success_data);
+					 });
+				};
+
+			$scope.getAllchat();
+			$scope.chatUser = "nikkyBot"
+			$scope.chatMessage="";
+
+
+
+	io.socket.on('user',function(obj){
+	    	console.log(obj)
+	      	$scope.chatList.push(obj.data);
+					$scope.$digest();
+	    });
+
+
+
+			$scope.sendMsg = function(){
+
+				io.socket.post('/user/test',{ name: $scope.chatMessage });
+				$scope.chatMessage = "";
+			};
+		}]);
+	</script>
+
+
+
+
+</body>
+</html>

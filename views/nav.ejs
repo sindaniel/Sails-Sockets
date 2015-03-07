@@ -1,0 +1,16 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+  
+  var socket = io.connect();  
+
+  socket.on('prueba', function (json) {
+      console.log('fdfd');
+  });
+
+
+  $('#eso').click(function(){
+     io.sockets.emit('prueba','fdfd');
+  })
+
+
+</script>
