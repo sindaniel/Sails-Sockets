@@ -33,10 +33,13 @@ module.exports.routes = {
   ***************************************************************************/
 
   
-  // 'GET /test2':{
-  //    controller: 'ChatController',
-  //    action: 'addConv'
-  //  },
+  'GET /':{
+     controller: 'UserController',
+     action: 'test'
+   },
+   'GET /listSockets': 'UserController.listSockets',
+   'GET /admin': 'UserController.admin',
+   'GET /setScreen': 'UserController.setScreen',
 
   // 'GET /test':{
   //    controller: 'UserController',

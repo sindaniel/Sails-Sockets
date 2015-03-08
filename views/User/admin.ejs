@@ -1,0 +1,120 @@
+	<div class="container">
+		
+		<h1>Admin</h1>
+
+
+	</div>
+	<div class="container">
+		 <button class="btn btn-default col-lg-2 col-md-2" ng-click="getListSockets()">Obtener</button>  
+
+<hr>
+
+	<!-- 	 <table  class="table">
+			<tr class="chat_message" ng-repeat="chat in chatList | orderBy:predicate:reverse | limitTo: 15">
+				<td class="col-md-12 td_class">
+				 <form novalidate class="css-form">
+					<input type="color" ng-model="socket.color">
+					<input type="hidden" ng-model="socket.id" value="{{chat}}">
+
+					<input type="submit" ng-click="update(socket)" value="Save" />
+				</form>
+				</td>
+			</tr>
+		</table>
+ -->
+
+		<form action="">
+			<input type="color"  ng-model="a.b" type="color"  placeholder="TypeYourMessageHere">
+			<select ng-model="id" class="form-control">
+				<option ng-repeat="chat in chatList | orderBy:predicate:reverse | limitTo: 15" value="{{chat}}">{{chat}}</option>
+			</select>
+		</form>
+
+	
+ 	
+
+	</div>
+
+
+ <script type="text/javascript" src="/js/dependencies/sails.io.js"></script>
+
+
+
+  <script type="text/javascript">
+  </script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.min.js"></script>
+ 
+ 
+  <script type="text/javascript">
+
+    var socketApp = angular.module('socketApp',[]);
+
+
+    socketApp.controller('UserController',['$http','$log','$scope',function($http,$log,$scope){
+
+    	   $scope.chatList =[];
+
+        //io.socket.get('/test');
+        io.socket.get('/user/test/');
+
+               
+
+
+
+
+  // io.socket.on('privateMessage',function(obj){
+  //       console.log("socket")
+
+  //       /*  $scope.chatList.push(obj.data);
+  //         $scope.$digest();*/
+  //     });
+
+
+    io.socket.on('user',function(obj){
+       
+        $scope.chatList = []
+			$scope.chatList =obj.data.sockets;
+         $scope.$digest();
+
+        /*  $scope.chatList.push(obj.data);
+          $scope.$digest();*/
+      });
+
+ $scope.$watch('a.b', function (newValue, oldValue, id) {
+    console.log('oldValue=' + oldValue);
+	console.log('newValue=' + newValue);
+	console.log($scope.id);
+
+
+	 io.socket.post('/user/setScreen',{ id:$scope.id, color:newValue });
+    //$scope.update()
+    //do something
+});
+
+
+
+      $scope.sendMsg = function(id){
+ 		
+      	var colors = ["orange", "green", "blue", "yellow", "rebeccapurple", "fuchsia"];
+
+      	randomnumber=Math.floor(Math.random()*5)
+      	console.log({ id:id, color:colors[randomnumber] })
+        io.socket.post('/user/setScreen',{ id:id, color:colors[randomnumber] });
+      
+      };
+
+
+      $scope.getListSockets = function(){
+        io.socket.post('/user/listSockets',{});
+      };
+
+       $scope.update = function(socket) {
+
+       	console.log(socket.color)
+         io.socket.post('/user/setScreen',{ id:'oKAJLZBSVfXH8C-EAAAE', color:socket.color+"" });
+      };
+
+
+
+    }]);
+  </script>

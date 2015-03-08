@@ -1,0 +1,91 @@
+
+
+
+	<!-- <div class="col-md-12" style="padding:100px">
+		
+		<table  class="table">
+			<tr class="chat_message" ng-repeat="chat in chatList | orderBy:predicate:reverse | limitTo: 15">
+				<td class="col-md-12 td_class"><strong>{{ chat.id }} : </strong> {{ chat.name }}</td>
+			</tr>
+		</table>
+		
+	</div>
+ -->
+
+	
+
+	 <script type="text/javascript" src="/js/dependencies/sails.io.js"></script>
+
+
+
+  <script type="text/javascript">
+  </script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.min.js"></script>
+ 
+ 
+  <script type="text/javascript">
+
+    var socketApp = angular.module('socketApp',[]);
+
+
+    socketApp.controller('UserController',['$http','$log','$scope',function($http,$log,$scope){
+
+
+      $scope.predicate = '-id';
+      $scope.reverse = false;
+      $scope.baseUrl = 'http://192.168.0.100:1337';
+      $scope.chatList =[];
+      $scope.getAllchat = function(){
+
+        //io.socket.get('/test');
+        io.socket.get('/user/test/');
+
+               
+
+        $http.get($scope.baseUrl+'/user')
+           .success(function(success_data){
+              $scope.chatList = success_data;
+             // $log.info(success_data);
+           });
+        };
+
+      $scope.getAllchat();
+      $scope.chatUser = "0"
+      $scope.chatMessage="something";
+
+
+
+  // io.socket.on('privateMessage',function(obj){
+  //       console.log("socket")
+
+  //       /*  $scope.chatList.push(obj.data);
+  //         $scope.$digest();*/
+  //     });
+
+
+
+      io.socket.on('privateMessage', function onServerSentEvent (msg) {
+        console.log(msg)
+       });
+
+       io.socket.on('setColor', function onServerSentEvent (msg) {
+        console.log(msg)
+        document.body.style.backgroundColor = msg;
+       });
+
+
+
+
+      $scope.sendMsg = function(){
+        io.socket.post('/user/test',{ send: $scope.chatUser, message: $scope.chatMessage });
+        $scope.chatMessage = "";
+      };
+
+
+      $scope.getListSockets = function(){
+        io.socket.post('/user/listSockets',{});
+      };
+
+
+    }]);
+  </script>
