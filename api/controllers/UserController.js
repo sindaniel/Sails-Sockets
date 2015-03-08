@@ -6,8 +6,25 @@
  */
 
 module.exports = {
+
   admin: function(req, res, next){
     res.view();
+  },
+  connectSocket: function(req, res, next){
+
+    // if (req.isSocket){
+
+    //     User.find({}).exec(function(e,listOfUsers){
+    //       User.subscribe(req.socket,listOfUsers);
+    //     console.log('User with socket id '+req.socket.id+' is now subscribed to all of the model instances in \'users\'.');
+          
+          
+    //     });
+     
+    // }
+
+
+
   },
 	test: function(req, res, next){
 
@@ -18,9 +35,9 @@ module.exports = {
         var socketId;
 
 
-User.findOne({id: 1}).exec(function(err, userInstance) {
-  console.log(userInstance)
-});
+      User.findOne({id: 1}).exec(function(err, userInstance) {
+        console.log(userInstance)
+      });
 
 
         if (send && req.isSocket){
@@ -37,20 +54,13 @@ User.findOne({id: 1}).exec(function(err, userInstance) {
         }
 
 
- User.findOne(1).exec(function(e,userOne){
-              // Get all of the sockets that are subscribed to user #1
+        User.findOne(1).exec(function(e,userOne){
 
-            
                 var subscribers = User.subscribers(userOne);
-            
              _.each(subscribers, function(subscriber) {
                  User.publishUpdate(1,{id:subscriber.id});
                  sails.sockets.emit(subscriber.id, 'privateMessage', {id:subscriber.id});
               });
-
-
-
-              // Subscribe them all to userOne's best friend, too
             
           });
 
@@ -80,11 +90,6 @@ User.findOne({id: 1}).exec(function(err, userInstance) {
         } else{
    
         res.view();
-
-
-
-
-
 
       }
 	},

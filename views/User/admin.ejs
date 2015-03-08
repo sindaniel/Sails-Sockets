@@ -9,19 +9,14 @@
 
 <hr>
 
-	<!-- 	 <table  class="table">
-			<tr class="chat_message" ng-repeat="chat in chatList | orderBy:predicate:reverse | limitTo: 15">
+		 <table  class="table">
+			<tr class="chat_message" ng-repeat="socket in sockets | orderBy:predicate:reverse | limitTo: 15">
 				<td class="col-md-12 td_class">
-				 <form novalidate class="css-form">
-					<input type="color" ng-model="socket.color">
-					<input type="hidden" ng-model="socket.id" value="{{chat}}">
-
-					<input type="submit" ng-click="update(socket)" value="Save" />
-				</form>
+						{{socket}}
 				</td>
 			</tr>
 		</table>
- -->
+ 
 
 		<form action="">
 			<input type="color"  ng-model="a.b" type="color"  placeholder="TypeYourMessageHere">
@@ -52,30 +47,23 @@
 
     socketApp.controller('UserController',['$http','$log','$scope',function($http,$log,$scope){
 
-    	   $scope.chatList =[];
+    	 $scope.sockets =[];
 
         //io.socket.get('/test');
-        io.socket.get('/user/test/');
+      //  io.socket.get('/user/connectSocket/');
 
                
 
 
 
 
-  // io.socket.on('privateMessage',function(obj){
-  //       console.log("socket")
-
-  //       /*  $scope.chatList.push(obj.data);
-  //         $scope.$digest();*/
-  //     });
-
 
     io.socket.on('user',function(obj){
        
-        $scope.chatList = []
-			$scope.chatList =obj.data.sockets;
-         $scope.$digest();
-
+       
+		$scope.sockets = obj.data;
+		$scope.$digest();
+  
         /*  $scope.chatList.push(obj.data);
           $scope.$digest();*/
       });

@@ -40,7 +40,8 @@ module.exports.routes = {
    'GET /listSockets': 'UserController.listSockets',
    'GET /admin': 'UserController.admin',
    'GET /setScreen': 'UserController.setScreen',
-
+  'GET /connectSocket': 'UserController.connectSocket'
+    
   // 'GET /test':{
   //    controller: 'UserController',
   //    action: 'test'
